@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EcoSistemas.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace EcoSistemas.Controllers
@@ -62,6 +65,39 @@ namespace EcoSistemas.Controllers
                     client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenDados.data);
                 }
                 var response = client.GetAsync(url + "api/Desafio/GetPaciente").Result;
+                return response.Content.ReadAsStringAsync().Result;
+            }
+        }
+
+        public string UpdatePaciente(PacienteModel Paciente)
+        {
+
+            var values = new Dictionary<string, string>{
+                  { "usu_nome", Paciente.usu_nome},
+                  { "email", Paciente.email },
+                  { "telefone", Paciente.telefone },
+                };
+
+            var json = JsonConvert.SerializeObject(values, Formatting.Indented);
+            var stringContent = new StringContent(json);
+
+            //Recebendo o token
+            string token = GetToken();
+
+            Token tokenDados = System.Text.Json.JsonSerializer.Deserialize<Token>(token);
+
+            using (var client = new HttpClient())
+            {
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenDados.data);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                }
+
+                var response = client.PostAsync(url + "api/Desafio/UpdatePaciente/", new StringContent(json, Encoding.UTF8, "application/json")).Result;
+
                 return response.Content.ReadAsStringAsync().Result;
             }
         }

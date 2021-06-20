@@ -13,18 +13,6 @@ using System.Threading.Tasks;
 namespace EcoSistemas.Controllers
 {
 
-    public class RootObj
-    {
-        public List<Paciente> data { get; set; }
-    }
-
-    public class Paciente
-    {
-        public string usu_nome { get; set; }
-        public string email { get; set; }
-        public string telefone { get; set; }
-    }
-
     public class PacienteController : ApiController
     {
 
@@ -46,6 +34,23 @@ namespace EcoSistemas.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult EditPaciente(PacienteModel Paciente)
+        {
+            //Atualizado os dados do paciente
+            string json = UpdatePaciente(Paciente);
+
+            dynamic tokenDados = JsonConvert.DeserializeObject<Passo>(json);
+            ViewBag.msg = tokenDados.mensagem;
+
+            //Passando os dados para view
+            ViewBag.usu_nome = Paciente.usu_nome;
+            ViewBag.email = Paciente.email;
+            ViewBag.telefone = Paciente.telefone;
+
+            return View();
+
+        }
 
 
     }
