@@ -17,6 +17,13 @@ namespace EcoSistemas.Controllers
         public string data { get; set; }
     }
 
+    public class Passo
+    {
+        public string mensagem { get; set; }
+        public string proximaEtapa { get; set; }
+        public int statusCode { get; set; }
+    }
+
     public class ApiController : Controller
     {
 
@@ -36,6 +43,27 @@ namespace EcoSistemas.Controllers
                 return response.Content.ReadAsStringAsync().Result;
             }
 
+        }
+
+        //Busca Pacientes
+        public string GetPaciente()
+        {
+            //Recebendo o token
+            string token = GetToken();
+
+            Token tokenDados = System.Text.Json.JsonSerializer.Deserialize<Token>(token);
+
+            using (var client = new HttpClient())
+            {
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenDados.data);
+                }
+                var response = client.GetAsync(url + "api/Desafio/GetPaciente").Result;
+                return response.Content.ReadAsStringAsync().Result;
+            }
         }
 
     }

@@ -17,9 +17,9 @@ namespace EcoSistemas.Controllers
 
         public IActionResult Index()
         {
-            //Passo 1 recebendo o valor do Token
+            //Recebendo o valor do Token
             var tokenDados = JsonConvert.DeserializeObject<Token>(GetToken());
-
+            //Exibindo as mensagens
             ViewBag.msg = tokenDados.mensagem;
             ViewBag.proxima = tokenDados.proximaEtapa;
 
